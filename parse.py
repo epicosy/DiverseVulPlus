@@ -67,7 +67,8 @@ if __name__ == '__main__':
 
     # merge with tenet dataset
     tenet_df = pd.read_csv(str(root_path / 'tenet.csv'), sep=',')
+    # drop unnecessary index column 'Unnamed: 0'
+    tenet_df.drop(columns=['Unnamed: 0'], inplace=True)
     merged = short_single_vul_df.merge(tenet_df, left_on='cve_id', right_on='vuln_id')
     print(f"Number of CVE IDs with only one vulnerable function and in tenet dataset: {len(merged)}")
     merged.to_csv(str(root_path / 'diverse_vul_tenet.csv'), index=False)
-
