@@ -64,6 +64,7 @@ if __name__ == '__main__':
     mean = sum(single_vul_sizes) / len(single_vul_sizes)
     print(f"Average size of single vulnerable functions: {mean}")
     short_single_vul_df = single_vul_df[single_vul_df['size'] < mean]
+    print(f"Number of CVE IDs with only one short vulnerable function: {len(short_single_vul_df)}")
 
     # merge with tenet dataset
     tenet_df = pd.read_csv(str(root_path / 'tenet.csv'), sep=',')
@@ -71,4 +72,9 @@ if __name__ == '__main__':
     tenet_df.drop(columns=['Unnamed: 0'], inplace=True)
     merged = short_single_vul_df.merge(tenet_df, left_on='cve_id', right_on='vuln_id')
     print(f"Number of CVE IDs with only one vulnerable function and in tenet dataset: {len(merged)}")
+    # include only single patch CVE-IDS
+    merged = merged[merged['patch'] == 'SINGLE']
+    print(f"Number of CVE IDs with only one vulnerable function and in tenet dataset and single patch: {len(merged)}")
+
     merged.to_csv(str(root_path / 'diverse_vul_tenet.csv'), index=False)
+
